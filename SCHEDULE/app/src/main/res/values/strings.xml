@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Расписание 10 класс</string>
+    <string name="lesseon">До конца урока осталось: </string>
+    <string name="nextlesseon">Следующий урок: </string>
+    <string name="exist">Выход</string>
+
+</resources>

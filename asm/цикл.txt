@@ -1,0 +1,23 @@
+
+
+org 100h
+
+jmp start
+
+msg:    db      "Hello, World!",0Dh,0Ah,24h
+                                             
+start:  mov     bx, 4
+        
+print:  mov     dx, msg
+        mov     ah, 09h 
+        int     21h 
+        
+        cmp     bx,0
+        dec     bx
+        ja      print
+        
+        
+        mov     ah, 0 
+        int     16h 
+        
+ret 

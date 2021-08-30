@@ -1,0 +1,162 @@
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.*;
+
+
+public class Main {
+    static ArrayList<Point>  pointArrayList = new ArrayList<>();
+    public static void main(String[] args) throws IOException {
+        System.out.println("Convex Hull is:");
+        ArrayList<Point>  pointArrayListMain = scan();
+
+        Point begin = new Point(100,100);
+        Point end = new Point(-1,-1);
+        for (Point p :pointArrayListMain) {
+            if(p.x<begin.x)begin = p;
+        }
+        sortCollection(pointArrayListMain);
+        pointArrayList.add(begin);
+        steep_method(pointArrayListMain,begin,pointArrayListMain.get(pointArrayListMain.size()-1));
+        steep_method(pointArrayListMain,pointArrayListMain.get(pointArrayListMain.size()-1),begin);
+        pointArrayList.add(pointArrayListMain.get(pointArrayListMain.size()-1));
+        print(sortCollection(pointArrayList));
+
+
+
+    }
+
+
+
+    public static void steep_method(ArrayList<Point>  list, Point left, Point right){
+        ArrayList<Point> PointLeft = new ArrayList();
+        //ArrayList<Point> PointRight = new ArrayList();
+        Point maxDistanceLeft = new Point(-1,-1,1);
+       // Point maxDistanceRight =new Point(-1,-1,-1);
+        for (Point p:list) {
+            double position = count_of_liner(left.x,left.y,right.x,right.y,p.x,p.y);//левее значит минус
+            if (position < 0&&(!p.equals(right))&&(!p.equals(left))){//левее
+                PointLeft.add(p);
+                if (position < maxDistanceLeft.distance){
+                    maxDistanceLeft.x = p.x;
+                    maxDistanceLeft.y = p.y;
+                    maxDistanceLeft.distance =  position;
+                }
+            }
+//            else if(position>0){
+//                PointRight.add(p);
+//
+//                    if (position > maxDistanceRight.distance){
+//                        maxDistanceRight.x = p.x;
+//                        maxDistanceRight.y = p.y;
+//                        maxDistanceRight.distance =  position;
+//                    }
+//                }
+            }
+
+        if (maxDistanceLeft.x!=-1){
+            ArrayList<Point> newListLeft = new ArrayList();
+            for (Point p : PointLeft) {
+                if (count_of_liner(left.x, left.y, maxDistanceLeft.x,maxDistanceLeft.y,p.x, p.y)<=0 || count_of_liner(maxDistanceLeft.x,maxDistanceLeft.y, right.x, right.y, p.x, p.y)<=0){
+                newListLeft.add(p);
+                }
+            }
+            pointArrayList.add(maxDistanceLeft);
+            steep_method(newListLeft,left,maxDistanceLeft);
+            steep_method(newListLeft,maxDistanceLeft,right);
+        }
+//        if (maxDistanceRight.x!=-1){
+//            ArrayList<Point> newListRight = new ArrayList();
+//            for (Point p : PointRight) {
+//                if (count_of_liner(left.x, left.y, maxDistanceRight.x,maxDistanceRight.y, p.x, p.y) > 0 || count_of_liner(maxDistanceRight.x, maxDistanceRight.y, right.x, right.y, p.x, p.y) > 0){
+//                    newListRight.add(p);
+//                }
+//            }
+//            pointArrayList.add(maxDistanceRight);
+//            steep_method(newListRight,left,maxDistanceRight);
+//            steep_method(newListRight,maxDistanceLeft,right);
+//        }
+
+    }
+
+
+
+    public static double count_of_liner(double x1,double y1, double x2, double y2,double x, double y) {
+        return  (y2-y1)*x-(x2-x1)*y+x2*y1-y2*x1 ;
+    }
+    public static ArrayList<Point> scan() throws IOException {
+        File output = new File("C:\\test\\text.txt");
+        BufferedReader reader = new BufferedReader(new FileReader(output));
+        ArrayList<Point>  pointArrayList = new ArrayList<>();
+        ArrayList<String[]> list = new ArrayList<>();
+        while (reader.ready())
+        {
+
+            list.add(reader.readLine().split(" "));
+        }
+        int x = 0;
+        int y = 0;
+        for (String[] a:list) {
+            x = Integer.parseInt(a[0]);
+            y = Integer.parseInt(a[1]);
+            pointArrayList.add(new Point(x,y));
+        }
+        return pointArrayList;
+    }
+    public static ArrayList<Point> sortCollection(ArrayList<Point> pointArrayList){
+        int l = pointArrayList.size();
+                for (int i = 0; i < l-1; i++)
+                {
+                    for (int j = 0; j < l-1; j++)
+                        {
+                            if (pointArrayList.get(j).x> pointArrayList.get(j+1).x)
+                            {
+
+                                Point temp = pointArrayList.get(j);
+                                pointArrayList.set(j,pointArrayList.get(j+1)) ;
+                                pointArrayList.set(j+1,temp);
+
+                            }
+                            else if ((pointArrayList.get(j).y > pointArrayList.get(j+1).y)&& (pointArrayList.get(j).x == pointArrayList.get(j+1).x))
+                            {
+                                Point temp = pointArrayList.get(j);
+                                pointArrayList.set(j,pointArrayList.get(j+1)) ;
+                                pointArrayList.set(j+1,temp);
+
+                            }
+                        }
+                }
+        return pointArrayList;
+    }
+    public static void print(ArrayList<Point> pointArrayList){
+        for (Point x:pointArrayList) {
+            System.out.println(x.x+" "+x.y);
+        }
+    }
+}
+class Point{
+    int x;
+
+    int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Point(int x, int y, double distance) {
+        this.x = x;
+        this.y = y;
+        this.distance = distance;
+    }
+    public boolean equals(Point obj) {
+        if (obj.x == this.x && obj.y == this.y)
+            return true;
+        return false;
+    }
+
+    double distance;
+
+}
+
+
+

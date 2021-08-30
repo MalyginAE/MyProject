@@ -1,0 +1,5 @@
+(laba asm)c\t.txt
+c\t2.txt
+
+fortest
+main

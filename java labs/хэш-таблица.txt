@@ -1,0 +1,107 @@
+import java.util.Scanner;
+public class MultiplicationFormula {
+    public static boolean equals1(String obj,String obj2) {
+        if (obj == null||obj2==null)return false;
+        if (obj.length() == obj2.length()){
+            for (int i = 0; i < obj.length(); i++) {
+                if (obj.charAt(i)!=obj2.charAt(i))return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String[] f = scanner.nextLine().split(" ");
+        int q = Integer.parseInt(f[0]);
+        int p = Integer.parseInt(f[1]);
+        int n = Integer.parseInt(f[2]);
+        String[] key = new String[q];
+        String[] value = new String[q];
+        String str;
+        for (int i = 0; i < n; i++) {
+            str = scanner.nextLine();
+            String[] words = str.split(" ");
+            long hash = HashCode(words[1], q, p);
+            if (words[0].equals("PUT")) {
+                if ((key[(int) hash] == null)||equals1((key[(int)hash]),"Anatoly228")){
+                    key[(int) hash] = words[1];
+                    String word;
+                    word = words[2];
+                    if (words[2].equals(""))word = words[3];
+                    value[(int) hash] = word;
+                    System.out.printf("key=%s hash=%d operation=PUT result=inserted value=%s\n",words[1],hash,word);
+                    continue;
+                } else {
+                    boolean fl = true;
+                    for (int j = 1; j <= q; j++) {
+                        if (((key[((int) hash + j) % q] == null))||(equals1((key[((int) hash + j) % q]),"Anatoly228"))) {
+                            key[((int) hash + j) % q] = words[1];
+                            value[((int) hash + j) % q] = words[2];
+                            System.out.println("key=" + words[1] + " hash=" + hash + " operation=PUT result=collision linear_probing=" + (((int) hash + j) % q) + " value=" + words[2]);
+                            fl = false;
+                            break;
+                        }
+                    }
+                    if (fl)System.out.printf("key=%s hash=%d operation=PUT result=overflow\n", words[1], hash);
+                }
+            }
+            if (words[0].equals("GET")) {
+                if (equals1(key[(int) hash],words[1])) {
+                    System.out.printf("key=%s hash=%d operation=GET result=found value=%s\n", words[1], (int)hash, value[(int) hash]);
+                } else {
+                    if ((key[(int) ((hash) % q)] == null)) {
+                        System.out.printf("key=%s hash=%d operation=GET result=no_key\n", words[1], hash);
+                        continue;
+                    }
+                    for (int j = 1; j <= q; j++) {
+                        if (equals1(key[((int) hash + j) % q],words[1])){
+                            System.out.printf("key=%s hash=%d operation=GET result=collision linear_probing=%d value=%s\n", words[1], hash, (hash + j) % q, value[((int) hash + j) % q]);
+
+                            break;
+                        }
+                        if (key[((int) hash + j) % q]==(null)) {
+                            System.out.printf("key=%s hash=%d operation=GET result=collision linear_probing=%d value=no_key\n", words[1], hash, (hash + j) % q);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (words[0].equals("DEL")) {
+                if ((key[(int) hash] != null)&&(equals1(key[(int)hash],words[1]))) {
+                    key[(int) hash] = "Anatoly228";
+                    value[(int) hash] = "Anatoly228";
+                    System.out.printf("key=%s hash=%d operation=DEL result=removed\n", words[1], hash);
+                } else {
+                    if (key[(int) (hash % q)] == null) {
+                        System.out.printf("key=%s hash=%d operation=DEL result=no_key\n", words[1], hash);
+                        continue;
+                    }
+                    for (int j = 1; j <= q; j++) {
+                        if (equals1(key[((int) hash + j) % q],(words[1]))) {
+                            System.out.printf("key=%s hash=%d operation=DEL result=collision linear_probing=%d value=removed\n", words[1], hash, (hash + j) % q, value[((int) hash + j) % q]);
+                            key[((int) hash + j) % q] = "Anatoly228";
+                            value[((int) hash + j) % q] = "Anatoly228";
+                            break;
+                        }
+                        if (key[((int) hash + j) % q]==(null)) {
+                            System.out.printf("key=%s hash=%d operation=DEL result=collision linear_probing=%d value=no_key\n", words[1], hash, (hash + j) % q);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+        public static Long HashCode (String s,int q, int p){
+            long hash = 0;
+            for (int i = 1; i <= s.length(); i++) {
+                hash += ABC(s.charAt(i - 1)) * Math.pow(p, i - 1);
+                hash %= q;
+            }
+            return hash;
+        }
+        public static Integer ABC ( char a){
+            return a - 'a' + 1;
+        }
+}

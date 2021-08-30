@@ -1,0 +1,58 @@
+org 100h
+mes: DB 'enter 4 hex digits',13,10,'$'
+start:                                                       
+    mov AH, 9h
+    lea DX , mes
+    int 21h
+    mov CX,4
+    mov BX,0h
+    unZero:
+    push BX 
+    call input
+    pop BX
+    shl BX,4
+    or BL,AL
+    loop unZero  
+    int 20h
+    
+
+input proc 
+begin:
+    mov AH, 08h
+    int 21h
+    cmp AL, 30h  
+    jb error
+    cmp AL, 46h
+    ja error 
+    cmp AL, 39h
+    jbe ok
+    cmp AL, 41h
+    jae ok
+error: 
+    mov AH, 2h
+    mov DL, 7h
+    int 21h
+    jmp begin
+ok:
+    mov AH, 2h
+    mov DL, AL
+    int 21h   
+    sub AL, 30h
+    cmp AL, 0Ah
+    jb ext
+    sub AL, 7h
+ext: 
+    ret 
+input endp
+    
+   
+    
+    
+    
+    
+    
+ 
+ 
+    
+    
+    

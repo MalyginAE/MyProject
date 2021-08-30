@@ -1,0 +1,88 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+
+public class Main {
+    static int[] mainArray;
+    public static int[] split(int [] array){
+        if (array.length == 1)return array;
+        int a[] = new int[array.length/2];
+        int b[] = new int[array.length - array.length/2];
+        for (int i = 0; i < array.length/2; i++) {
+            a[i] = array[i];
+        }
+        for (int i = array.length/2; i < array.length; i++) {
+            b[i-array.length/2] = array[i];
+        }
+        if (array.length >= 2){
+           a = split(a);
+           b = split(b);
+        }
+        return merge(a,b);
+
+    }
+    public static void main(String[] args) {
+       Scan();
+       Print("Initial array:\n",mainArray);
+        System.out.println();
+        split(mainArray);
+
+
+       
+
+    }
+
+    public static void Print(String s,int[] array){
+        System.out.print(s);
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(array[i]+" ");
+        }
+    }
+    public static void Scan(){
+        Scanner scanner = new Scanner(System.in);
+        int number_of_elements = scanner.nextInt();
+        mainArray = new int[number_of_elements];
+        for (int i = 0; i < number_of_elements; i++) {
+            mainArray[i] = scanner.nextInt();
+        }
+    }
+    public static int[] merge(int[] array_left, int[] array_right){
+        int[] common = new int[array_left.length +array_right.length];
+        int i=0,j=0,s=0;
+        Print("\nLeft part: ",array_left);
+        Print("\nRight part: ",array_right);
+        while (i<array_left.length&&j<array_right.length){
+
+            if (array_left[i]<=array_right[j]){
+                common[s] = array_left[i];
+                i++;s++;
+            }
+            else {
+                common[s] = array_right[j];
+                j++;s++;
+            }
+
+        }
+        if (j==array_right.length){
+            for (int k = i; k < array_left.length; k++) {
+             common[s] = array_left[k];
+             s++;
+            }
+        }
+        else if (i==array_left.length){
+            for (int k = j; k < array_right.length; k++) {
+                common[s] = array_right[k];
+                s++;
+            }
+        }
+        Print("\nMerged parts: ",common);
+        System.out.println();
+        return common;
+        
+    }
+
+}
+
+
